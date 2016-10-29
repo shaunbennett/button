@@ -8,11 +8,12 @@ reset();
 
 /* GET home page. */
 router.get('/button', function(req, res, next) {
-  var uwId = req.params['uwId'];
+  var uwId = req.query['uwId'];
   var obj = { finishTime: finishTime };
   if (uwId && cache[uwId]) {
+    console.log('cache exists');
     obj.secondsClicked = cache[uwId].secondsClicked;
-    var diff = (new Date.now().getTime()) - cache[uwId].lastClick.getTime();
+    var diff = (new Date().getTime()) - cache[uwId].lastClick.getTime();
     obj.canClick = diff >= clickReset;
   }
   res.json(obj);
@@ -24,15 +25,21 @@ router.get('/reset', function(req, res, next) {
 });
 
 router.get('/click', function (req, res, next) {
-  var uwId = req.params.uwId;
-  var seconds = req.params.clickSeconds;
+  var uwId = req.query.uwId;
+  var seconds = req.query.clickSeconds;
   cacheData = {
-    lastClick: Date.now(),
+    lastClick: new Date(),
     secondsClicked: seconds
   };
+  console.log('added ' + uwId + ' to cache');
   cache[uwId] = cacheData;
 
-  res.json({ finishTime: finishTime });
+  reset();
+  res.json({
+    finishTime: finishTime,
+    secondsClicked: seconds,
+    canClick: false
+  });
 });
 
 function reset() {
