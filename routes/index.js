@@ -26,6 +26,16 @@ router.get('/reset', function(req, res, next) {
 router.get('/click', function (req, res, next) {
   var uwId = req.query.uwId;
   var secondsLeft = Math.ceil((finishTime.getTime() - (new Date().getTime())) / 1000);
+
+  if (uwId && cache[uwId]) {
+    var diff = (new Date().getTime()) - cache[uwId].lastClick.getTime();
+    var canClick = diff >= clickReset;
+    if (!canClick) {
+      res.json({ finishTime: finishTime });
+      return;
+    }
+  }
+
   cacheData = {
     lastClick: new Date(),
     secondsClicked: secondsLeft
