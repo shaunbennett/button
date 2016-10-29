@@ -16,7 +16,7 @@ router.get('/reset', function(req, res, next) {
 
 function reset() {
   finishTime = new Date();
-  finishTime.setTime(finishTime.getTime() + (1000 * 60 * 60));
+  finishTime.setTime(finishTime.getTime() + (1000 * 60));
 }
 
 module.exports = router;
