@@ -4,12 +4,13 @@ var router = express.Router();
 var finishTime;
 var cache = {};
 var clickReset = 10 * 1000;
+var clicks = 139;
 reset();
 
 /* GET home page. */
 router.get('/button', function(req, res, next) {
   var uwId = req.query['uwId'];
-  var obj = { finishTime: finishTime };
+  var obj = { finishTime: finishTime, clicks: clicks };
   if (uwId && cache[uwId]) {
     obj.secondsClicked = cache[uwId].secondsClicked;
     var diff = (new Date().getTime()) - cache[uwId].lastClick.getTime();
@@ -36,6 +37,8 @@ router.get('/click', function (req, res, next) {
     }
   }
 
+  clicks++;
+
   cacheData = {
     lastClick: new Date(),
     secondsClicked: secondsLeft
@@ -46,7 +49,8 @@ router.get('/click', function (req, res, next) {
   res.json({
     finishTime: finishTime,
     secondsClicked: secondsLeft,
-    canClick: false
+    canClick: false,
+    clicks: clicks
   });
 });
 
