@@ -11,7 +11,6 @@ router.get('/button', function(req, res, next) {
   var uwId = req.query['uwId'];
   var obj = { finishTime: finishTime };
   if (uwId && cache[uwId]) {
-    console.log('cache exists');
     obj.secondsClicked = cache[uwId].secondsClicked;
     var diff = (new Date().getTime()) - cache[uwId].lastClick.getTime();
     obj.canClick = diff >= clickReset;
@@ -26,18 +25,17 @@ router.get('/reset', function(req, res, next) {
 
 router.get('/click', function (req, res, next) {
   var uwId = req.query.uwId;
-  var seconds = req.query.clickSeconds;
+  var secondsLeft = Math.ceil((finishTime.getTime() - (new Date().getTime())) / 1000);
   cacheData = {
     lastClick: new Date(),
-    secondsClicked: seconds
+    secondsClicked: secondsLeft
   };
-  console.log('added ' + uwId + ' to cache');
   cache[uwId] = cacheData;
 
   reset();
   res.json({
     finishTime: finishTime,
-    secondsClicked: seconds,
+    secondsClicked: secondsLeft,
     canClick: false
   });
 });
